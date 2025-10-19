@@ -9,8 +9,13 @@ class ChickenGame extends FlameGame with HasCollisionDetection {
   late PlayerChicken player;
   double _spawnTimer = 0;
   bool isGameOver = false;
+  int score = 0;
+  double elapsedTime = 0;
+  final void Function(int score, double time, bool won)? onScoreUpdate;
+  final double maxTime = 90;
+  bool isWon = false;
 
-  ChickenGame({required this.onGameOver});
+  ChickenGame({required this.onGameOver, required this.onScoreUpdate});
 
   @override
   Future<void> onLoad() async {
@@ -23,7 +28,6 @@ class ChickenGame extends FlameGame with HasCollisionDetection {
 
     player = PlayerChicken(
       gameSize: size,
-      onGameOver: onGameOver,
     )..priority = 1;
 
     add(player);
@@ -35,14 +39,37 @@ class ChickenGame extends FlameGame with HasCollisionDetection {
     if (isGameOver) return;
 
     _spawnTimer += dt;
+    elapsedTime += dt;
+
+    if (elapsedTime >= maxTime) {
+      gameOver(won: player.isAlive);
+      return;
+    }
+
     if (_spawnTimer > 1.5) {
       _spawnTimer = 0;
       add(EnemyCircle(gameSize: size)..priority = 0);
     }
+    onScoreUpdate?.call(score, elapsedTime, player.isAlive);
+  }
+
+  void addScore(int points) {
+    score += points;
+    onScoreUpdate?.call(score, elapsedTime, player.isAlive);
+  }
+
+  void gameOver({bool won = false}) {
+    if (isGameOver) return;
+    isGameOver = true;
+    isWon = won;
+    pauseEngine();
+    onGameOver();
   }
 
   void resetGame() {
     isGameOver = false;
+    score = 0;
+    elapsedTime = 0;
 
     for (final enemy in children.query<EnemyCircle>()) {
       enemy.removeFromParent();

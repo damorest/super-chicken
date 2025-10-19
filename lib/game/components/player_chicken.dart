@@ -1,17 +1,17 @@
-import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/collisions.dart';
+import 'package:media_test/game/chicken_game.dart';
+import 'egg.dart';
 import 'enemy_circle.dart';
 
 class PlayerChicken extends SpriteComponent
-    with DragCallbacks, CollisionCallbacks {
+    with DragCallbacks, CollisionCallbacks, TapCallbacks, HasGameReference<ChickenGame>  {
   final Vector2 gameSize;
-  final VoidCallback onGameOver;
   bool isAlive = true;
   late final Sprite initialSprite;
 
-  PlayerChicken({required this.gameSize, required this.onGameOver})
+  PlayerChicken({required this.gameSize})
       : super(size: Vector2(100, 100), anchor: Anchor.center);
 
   @override
@@ -44,11 +44,32 @@ class PlayerChicken extends SpriteComponent
     }
   }
 
-  Future<void> _burnChicken() async {
-    sprite = await Sprite.load('end.png');
-
-    Future.delayed(const Duration(milliseconds: 50), onGameOver);
+  @override
+  void onTapDown(TapDownEvent event) {
+    if (isAlive) {
+      dropEgg();
+    }
+    super.onTapDown(event);
   }
+
+  void dropEgg() {
+    final egg = Egg(
+      gameSize: gameSize,
+      position: Vector2(position.x, position.y + size.y / 2),
+    );
+    parent?.add(egg);
+  }
+
+  Future<void> _burnChicken() async {
+    final burnedSprite = await Sprite.load('end.png');
+
+    sprite = burnedSprite;
+
+    await Future.delayed(const Duration(milliseconds: 50));
+
+    game.gameOver();
+  }
+
 
   void resetSprite() {
     sprite = initialSprite;
