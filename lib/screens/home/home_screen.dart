@@ -34,7 +34,7 @@ class HomePage extends StatelessWidget {
             bottom: size.height * 0.02,
             child: GestureDetector(
               onTap: () {
-                /// TODO go to game Page
+                Navigator.pushNamed(context, AppRouter.game);
               },
               child: Stack(
                 alignment: Alignment.center,
