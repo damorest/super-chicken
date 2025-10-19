@@ -1,0 +1,140 @@
+import 'package:flutter/material.dart';
+import '../../core/app_router.dart';
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/menu_bg.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          Align(
+            alignment: Alignment.center,
+            child: FractionallySizedBox(
+              heightFactor: 0.8,
+              child: Image.asset(
+                'assets/images/chicken.png',
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+
+          Positioned(
+            bottom: size.height * 0.02,
+            child: GestureDetector(
+              onTap: () {
+                /// TODO go to game Page
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/menu_but.png',
+                    width: 270,
+                    height: 270,
+                    fit: BoxFit.contain,
+                  ),
+                  const Text(
+                    'PLAY',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 80,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black87,
+                          offset: Offset(2, 2),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          Positioned(
+            top: 40,
+            left: 20,
+            child: GestureDetector(
+              onTap: () {
+                // TODO: show info screen
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/Rectangle.png',
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.contain,
+                  ),
+                  const Text(
+                    'i',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black87,
+                          offset: Offset(2, 2),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          Positioned(
+            top: 40,
+            right: 20,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, AppRouter.menu);
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/Rectangle.png',
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.contain,
+                  ),
+                  const Icon(
+                    Icons.menu,
+                    color: Colors.white,
+                    size: 36,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black87,
+                        offset: Offset(2, 2),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
