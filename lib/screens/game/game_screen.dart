@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
+import 'package:media_test/core/app_router.dart';
+import 'package:media_test/widgets/components/app_button.dart';
 import '../../game/chicken_game.dart';
 import '../../widgets/app_pause_button.dart';
 
@@ -70,7 +72,6 @@ class _GamePageState extends State<GamePage> {
       body: Stack(
         children: [
           GameWidget(game: game),
-
           Positioned(
             top: 40,
             left: 20,
@@ -78,33 +79,24 @@ class _GamePageState extends State<GamePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/Rectangle.png',
-                        width: 70,
-                        height: 70,
-                        fit: BoxFit.contain,
-                      ),
-                      const Icon(
-                        Icons.home,
-                        color: Colors.white,
-                        size: 36,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black87,
-                            offset: Offset(2, 2),
-                            blurRadius: 4,
-                          ),
-                        ],
+                AppButton(
+                  type: AppButtonType.secondary,
+                  width: 70,
+                  height: 70,
+                  icon: const Icon(
+                    Icons.home,
+                    color: Colors.white,
+                    size: 36,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black87,
+                        offset: Offset(2, 2),
+                        blurRadius: 4,
                       ),
                     ],
                   ),
+                  onPressed: () => Navigator.pushNamed(context, AppRouter.home) ,
                 ),
-
                 Text(
                   elapsedTime.toStringAsFixed(1),
                   style: const TextStyle(
@@ -120,7 +112,6 @@ class _GamePageState extends State<GamePage> {
                     ],
                   ),
                 ),
-
                 SizedBox(
                   width: 60,
                   height: 60,
@@ -151,14 +142,12 @@ class _GamePageState extends State<GamePage> {
                     ],
                   ),
                 ),
-
                 AppPauseButton(
                   onTap: pauseGame,
                 ),
               ],
             ),
           ),
-
           if (isPaused)
             Positioned.fill(
               child: Container(
@@ -176,7 +165,6 @@ class _GamePageState extends State<GamePage> {
                         ),
                       ),
                       const SizedBox(height: 20),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -206,7 +194,6 @@ class _GamePageState extends State<GamePage> {
                         ],
                       ),
                       const SizedBox(height: 20),
-
                       GestureDetector(
                         onTap: resumeGame,
                         child: SizedBox(
@@ -245,7 +232,6 @@ class _GamePageState extends State<GamePage> {
                 ),
               ),
             ),
-
           if (showGameOver)
             Positioned.fill(
               child: Container(
@@ -265,7 +251,8 @@ class _GamePageState extends State<GamePage> {
                         ),
                         const SizedBox(height: 20),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
                           decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(12),
@@ -281,7 +268,8 @@ class _GamePageState extends State<GamePage> {
                         ),
                         const SizedBox(height: 20),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
                           decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(12),
@@ -371,7 +359,8 @@ class _GamePageState extends State<GamePage> {
                         ),
                         const SizedBox(height: 20),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
                           decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(12),
@@ -387,7 +376,8 @@ class _GamePageState extends State<GamePage> {
                         ),
                         const SizedBox(height: 20),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
                           decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(12),

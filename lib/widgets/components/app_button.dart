@@ -47,7 +47,6 @@ class AppButton extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
-                      fontFamily: 'RubikMonoOne',
                       fontSize: fontSize,
                       shadows: const [
                         Shadow(
