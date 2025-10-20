@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import '../../game/chicken_game.dart';
+import '../../widgets/app_pause_button.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({super.key});
@@ -12,6 +13,7 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
   late ChickenGame game;
   bool showGameOver = false;
+  bool isPaused = false;
 
   int score = 0;
   double elapsedTime = 0;
@@ -25,6 +27,7 @@ class _GamePageState extends State<GamePage> {
           if (!mounted) return;
           setState(() {
             showGameOver = true;
+            isPaused = false;
           });
         });
       },
@@ -34,7 +37,6 @@ class _GamePageState extends State<GamePage> {
           setState(() {
             score = newScore;
             elapsedTime = newTime;
-            /// TODO if you win, open new level
           });
         });
       },
@@ -44,10 +46,22 @@ class _GamePageState extends State<GamePage> {
   void restartGame() {
     setState(() {
       showGameOver = false;
+      isPaused = false;
       score = 0;
       elapsedTime = 0;
+      game.resumeEngine();
       game.resetGame();
     });
+  }
+
+  void pauseGame() {
+    game.pauseEngine();
+    setState(() => isPaused = true);
+  }
+
+  void resumeGame() {
+    game.resumeEngine();
+    setState(() => isPaused = false);
   }
 
   @override
@@ -138,57 +152,99 @@ class _GamePageState extends State<GamePage> {
                   ),
                 ),
 
-                GestureDetector(
-                  onTap: () {
-                    game.pauseEngine();
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (_) => AlertDialog(
-                        backgroundColor: Colors.black87,
-                        title: const Text(
-                          'PAUSE',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              game.resumeEngine();
-                            },
-                            child: const Text('CONTINUE'),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/Rectangle.png',
-                        width: 70,
-                        height: 70,
-                        fit: BoxFit.contain,
-                      ),
-                      const Icon(
-                        Icons.pause,
-                        color: Colors.white,
-                        size: 36,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black87,
-                            offset: Offset(2, 2),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                AppPauseButton(
+                  onTap: pauseGame,
                 ),
               ],
             ),
           ),
+
+          if (isPaused)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black54,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'PAUSED',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: const Text(
+                              'HOME',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 40),
+                          GestureDetector(
+                            onTap: restartGame,
+                            child: const Text(
+                              'RESTART',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+
+                      GestureDetector(
+                        onTap: resumeGame,
+                        child: SizedBox(
+                          width: 200,
+                          height: 80,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/menu_but.png',
+                                width: 200,
+                                height: 80,
+                                fit: BoxFit.contain,
+                              ),
+                              const Text(
+                                'Play',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black87,
+                                      offset: Offset(2, 2),
+                                      blurRadius: 4,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
 
           if (showGameOver)
             Positioned.fill(
@@ -200,7 +256,7 @@ class _GamePageState extends State<GamePage> {
                     children: [
                       if (game.isWon) ...[
                         const Text(
-                          'YOU WIN',
+                          'YOU WIN!',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 40,
@@ -217,6 +273,22 @@ class _GamePageState extends State<GamePage> {
                           child: Text(
                             'Score: $score',
                             style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Text(
+                            'Best:0000',
+                            style: TextStyle(
                               color: Colors.white,
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
@@ -290,7 +362,7 @@ class _GamePageState extends State<GamePage> {
                         )
                       ] else ...[
                         const Text(
-                          'GAME OVER',
+                          'YOU LOSE!',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 40,
@@ -298,28 +370,105 @@ class _GamePageState extends State<GamePage> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        GestureDetector(
-                          onTap: restartGame,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/images/menu_but.png',
-                                width: 200,
-                                height: 80,
-                                fit: BoxFit.contain,
-                              ),
-                              const Text(
-                                'RESTART',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            'Score: $score',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
+                        const SizedBox(height: 20),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Text(
+                            'Best:0000',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Center(
+                          child: GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: const Text(
+                              'HOME',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        GestureDetector(
+                          onTap: restartGame,
+                          child: SizedBox(
+                            width: 200,
+                            height: 80,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/images/menu_but.png',
+                                  width: 200,
+                                  height: 80,
+                                  fit: BoxFit.contain,
+                                ),
+                                const Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Try',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        shadows: [
+                                          Shadow(
+                                            color: Colors.black87,
+                                            offset: Offset(2, 2),
+                                            blurRadius: 4,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                      'Again',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        shadows: [
+                                          Shadow(
+                                            color: Colors.black87,
+                                            offset: Offset(2, 2),
+                                            blurRadius: 4,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
                       ],
                     ],
                   ),
