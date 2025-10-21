@@ -8,16 +8,21 @@ import 'enemy_circle.dart';
 class PlayerChicken extends SpriteComponent
     with DragCallbacks, CollisionCallbacks, TapCallbacks, HasGameReference<ChickenGame>  {
   final Vector2 gameSize;
+  final String avatarPath;
   bool isAlive = true;
   late final Sprite initialSprite;
 
-  PlayerChicken({required this.gameSize})
+  PlayerChicken({required this.gameSize, required this.avatarPath})
       : super(size: Vector2(100, 100), anchor: Anchor.center);
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    initialSprite = await Sprite.load('chicken.png');
+    try {
+    initialSprite = await Sprite.load(avatarPath);
+    } catch (_) {
+      initialSprite = await Sprite.load('default_chicken.png');
+    }
     sprite = initialSprite;
     position = Vector2(gameSize.x / 2, 170);
 

@@ -1,21 +1,24 @@
 import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import '../services/settings_service.dart';
 import 'components/player_chicken.dart';
 import 'components/enemy_circle.dart';
 
 class ChickenGame extends FlameGame with HasCollisionDetection {
   final VoidCallback onGameOver;
   late PlayerChicken player;
+  final String avatarPath;
+  final SettingsService settings;
   double _spawnTimer = 0;
   bool isGameOver = false;
   int score = 0;
-  double elapsedTime = 0;
   final void Function(int score, double time, bool won)? onScoreUpdate;
   final double maxTime = 90;
+  double remainingTime = 90;
   bool isWon = false;
 
-  ChickenGame({required this.onGameOver, required this.onScoreUpdate});
+  ChickenGame({required this.onGameOver,required this.settings, required this.onScoreUpdate, required this.avatarPath,});
 
   @override
   Future<void> onLoad() async {
@@ -26,8 +29,11 @@ class ChickenGame extends FlameGame with HasCollisionDetection {
       ..size = size
       ..anchor = Anchor.topLeft);
 
+
+
     player = PlayerChicken(
       gameSize: size,
+      avatarPath: avatarPath,
     )..priority = 1;
 
     add(player);
@@ -39,9 +45,10 @@ class ChickenGame extends FlameGame with HasCollisionDetection {
     if (isGameOver) return;
 
     _spawnTimer += dt;
-    elapsedTime += dt;
+    remainingTime -= dt;
 
-    if (elapsedTime >= maxTime) {
+    if (remainingTime <= 0) {
+      remainingTime = 0;
       gameOver(won: player.isAlive);
       return;
     }
@@ -50,18 +57,19 @@ class ChickenGame extends FlameGame with HasCollisionDetection {
       _spawnTimer = 0;
       add(EnemyCircle(gameSize: size)..priority = 0);
     }
-    onScoreUpdate?.call(score, elapsedTime, player.isAlive);
+    onScoreUpdate?.call(score, remainingTime, player.isAlive);
   }
 
   void addScore(int points) {
     score += points;
-    onScoreUpdate?.call(score, elapsedTime, player.isAlive);
+    onScoreUpdate?.call(score, remainingTime, player.isAlive);
   }
 
   void gameOver({bool won = false}) {
     if (isGameOver) return;
     isGameOver = true;
     isWon = won;
+    settings.updateBestScore(score);
     pauseEngine();
     onGameOver();
   }
@@ -69,7 +77,7 @@ class ChickenGame extends FlameGame with HasCollisionDetection {
   void resetGame() {
     isGameOver = false;
     score = 0;
-    elapsedTime = 0;
+    remainingTime = maxTime;
 
     for (final enemy in children.query<EnemyCircle>()) {
       enemy.removeFromParent();

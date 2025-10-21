@@ -50,9 +50,7 @@ class HomePage extends StatelessWidget {
             top: 40,
             left: 20,
             child: GestureDetector(
-              onTap: () {
-                // TODO: show info screen
-              },
+              onTap: () => Navigator.pushNamed(context, AppRouter.howToPlay) ,
               child: const AppButton(
                 type: AppButtonType.secondary,
                 text: 'i',

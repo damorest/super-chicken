@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
+import 'package:media_test/core/app_router.dart';
+import 'package:media_test/widgets/components/app_button.dart';
+import 'package:provider/provider.dart';
 import '../../game/chicken_game.dart';
+import '../../services/settings_service.dart';
 import '../../widgets/app_pause_button.dart';
 
 class GamePage extends StatefulWidget {
@@ -14,18 +18,25 @@ class _GamePageState extends State<GamePage> {
   late ChickenGame game;
   bool showGameOver = false;
   bool isPaused = false;
+  int bestScore = 0;
 
   int score = 0;
-  double elapsedTime = 0;
+  double remainingTime = 90;
 
   @override
   void initState() {
     super.initState();
+
+    final settings = context.read<SettingsService>();
+    final avatar = settings.avatarPath.isNotEmpty ? settings.avatarPath : 'default_chicken.png';
+    bestScore = settings.bestScore;
+
     game = ChickenGame(
       onGameOver: () {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
           setState(() {
+            bestScore = settings.bestScore;
             showGameOver = true;
             isPaused = false;
           });
@@ -36,10 +47,12 @@ class _GamePageState extends State<GamePage> {
           if (!mounted) return;
           setState(() {
             score = newScore;
-            elapsedTime = newTime;
+            remainingTime = newTime;
           });
         });
       },
+      avatarPath: avatar,
+      settings: settings,
     );
   }
 
@@ -48,7 +61,7 @@ class _GamePageState extends State<GamePage> {
       showGameOver = false;
       isPaused = false;
       score = 0;
-      elapsedTime = 0;
+      remainingTime  = 90;
       game.resumeEngine();
       game.resetGame();
     });
@@ -70,7 +83,6 @@ class _GamePageState extends State<GamePage> {
       body: Stack(
         children: [
           GameWidget(game: game),
-
           Positioned(
             top: 40,
             left: 20,
@@ -78,35 +90,26 @@ class _GamePageState extends State<GamePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/Rectangle.png',
-                        width: 70,
-                        height: 70,
-                        fit: BoxFit.contain,
-                      ),
-                      const Icon(
-                        Icons.home,
-                        color: Colors.white,
-                        size: 36,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black87,
-                            offset: Offset(2, 2),
-                            blurRadius: 4,
-                          ),
-                        ],
+                AppButton(
+                  type: AppButtonType.secondary,
+                  width: 70,
+                  height: 70,
+                  icon: const Icon(
+                    Icons.home,
+                    color: Colors.white,
+                    size: 36,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black87,
+                        offset: Offset(2, 2),
+                        blurRadius: 4,
                       ),
                     ],
                   ),
+                  onPressed: () => Navigator.pushNamed(context, AppRouter.home) ,
                 ),
-
                 Text(
-                  elapsedTime.toStringAsFixed(1),
+                  remainingTime.toStringAsFixed(0),
                   style: const TextStyle(
                     fontSize: 28,
                     color: Colors.white,
@@ -120,7 +123,6 @@ class _GamePageState extends State<GamePage> {
                     ],
                   ),
                 ),
-
                 SizedBox(
                   width: 60,
                   height: 60,
@@ -151,14 +153,12 @@ class _GamePageState extends State<GamePage> {
                     ],
                   ),
                 ),
-
                 AppPauseButton(
                   onTap: pauseGame,
                 ),
               ],
             ),
           ),
-
           if (isPaused)
             Positioned.fill(
               child: Container(
@@ -176,7 +176,6 @@ class _GamePageState extends State<GamePage> {
                         ),
                       ),
                       const SizedBox(height: 20),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -206,7 +205,6 @@ class _GamePageState extends State<GamePage> {
                         ],
                       ),
                       const SizedBox(height: 20),
-
                       GestureDetector(
                         onTap: resumeGame,
                         child: SizedBox(
@@ -245,7 +243,6 @@ class _GamePageState extends State<GamePage> {
                 ),
               ),
             ),
-
           if (showGameOver)
             Positioned.fill(
               child: Container(
@@ -265,7 +262,8 @@ class _GamePageState extends State<GamePage> {
                         ),
                         const SizedBox(height: 20),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
                           decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(12),
@@ -281,14 +279,15 @@ class _GamePageState extends State<GamePage> {
                         ),
                         const SizedBox(height: 20),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
                           decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Text(
-                            'Best:0000',
-                            style: TextStyle(
+                          child: Text(
+                            'Best: $bestScore',
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
@@ -371,7 +370,8 @@ class _GamePageState extends State<GamePage> {
                         ),
                         const SizedBox(height: 20),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
                           decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(12),
@@ -387,14 +387,15 @@ class _GamePageState extends State<GamePage> {
                         ),
                         const SizedBox(height: 20),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
                           decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Text(
-                            'Best:0000',
-                            style: TextStyle(
+                          child: Text(
+                            'Best: $bestScore',
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
