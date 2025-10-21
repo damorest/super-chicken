@@ -10,9 +10,9 @@ class MainMenuPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final menuItems = [
       {'label': 'Play', 'route': AppRouter.game},
-      {'label': 'Profile', 'route': null},
+      {'label': 'Profile', 'route': AppRouter.profile},
       {'label': 'Settings', 'route': AppRouter.settings},
-      {'label': 'Leaderboard', 'route': null},
+      {'label': 'Leaderboard', 'route': AppRouter.leaderboard},
       {'label': 'Shop', 'route': null},
       {'label': 'How\nto Play', 'route': AppRouter.howToPlay},
       {'label': 'Exit', 'route': null},

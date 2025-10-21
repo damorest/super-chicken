@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import 'package:media_test/core/app_router.dart';
 import 'package:media_test/widgets/components/app_button.dart';
+import 'package:provider/provider.dart';
 import '../../game/chicken_game.dart';
+import '../../services/settings_service.dart';
 import '../../widgets/app_pause_button.dart';
 
 class GamePage extends StatefulWidget {
@@ -16,18 +18,25 @@ class _GamePageState extends State<GamePage> {
   late ChickenGame game;
   bool showGameOver = false;
   bool isPaused = false;
+  int bestScore = 0;
 
   int score = 0;
-  double elapsedTime = 0;
+  double remainingTime = 90;
 
   @override
   void initState() {
     super.initState();
+
+    final settings = context.read<SettingsService>();
+    final avatar = settings.avatarPath.isNotEmpty ? settings.avatarPath : 'default_chicken.png';
+    bestScore = settings.bestScore;
+
     game = ChickenGame(
       onGameOver: () {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
           setState(() {
+            bestScore = settings.bestScore;
             showGameOver = true;
             isPaused = false;
           });
@@ -38,10 +47,12 @@ class _GamePageState extends State<GamePage> {
           if (!mounted) return;
           setState(() {
             score = newScore;
-            elapsedTime = newTime;
+            remainingTime = newTime;
           });
         });
       },
+      avatarPath: avatar,
+      settings: settings,
     );
   }
 
@@ -50,7 +61,7 @@ class _GamePageState extends State<GamePage> {
       showGameOver = false;
       isPaused = false;
       score = 0;
-      elapsedTime = 0;
+      remainingTime  = 90;
       game.resumeEngine();
       game.resetGame();
     });
@@ -98,7 +109,7 @@ class _GamePageState extends State<GamePage> {
                   onPressed: () => Navigator.pushNamed(context, AppRouter.home) ,
                 ),
                 Text(
-                  elapsedTime.toStringAsFixed(1),
+                  remainingTime.toStringAsFixed(0),
                   style: const TextStyle(
                     fontSize: 28,
                     color: Colors.white,
@@ -274,9 +285,9 @@ class _GamePageState extends State<GamePage> {
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Text(
-                            'Best:0000',
-                            style: TextStyle(
+                          child: Text(
+                            'Best: $bestScore',
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
@@ -382,9 +393,9 @@ class _GamePageState extends State<GamePage> {
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Text(
-                            'Best:0000',
-                            style: TextStyle(
+                          child: Text(
+                            'Best: $bestScore',
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 28,
                               fontWeight: FontWeight.bold,

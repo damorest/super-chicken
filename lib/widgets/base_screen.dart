@@ -36,7 +36,7 @@ class _BaseScreenState extends State<BaseScreen> with SingleTickerProviderStateM
 
     _colorAnimation = ColorTween(
       begin: Colors.transparent,
-      end: Colors.red.withAlpha((0.2* 255).round()),
+      end: Colors.red.withAlpha((0.2 * 255).round()),
     ).animate(_controller);
   }
 
@@ -52,6 +52,7 @@ class _BaseScreenState extends State<BaseScreen> with SingleTickerProviderStateM
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           Positioned.fill(
@@ -60,7 +61,6 @@ class _BaseScreenState extends State<BaseScreen> with SingleTickerProviderStateM
               fit: BoxFit.fill,
             ),
           ),
-
           Positioned.fill(
             child: AnimatedBuilder(
               animation: _controller,
@@ -70,73 +70,96 @@ class _BaseScreenState extends State<BaseScreen> with SingleTickerProviderStateM
             ),
           ),
 
-          Positioned(
-            top: 40,
-            left: 20,
-            child: AppBackButton(
-              onTap: widget.onBack ?? () => Navigator.pop(context),
-            ),
-          ),
+          SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16, top: 8),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: AppBackButton(
+                                size: 70,
+                                onTap: widget.onBack ?? () => Navigator.pop(context),
+                              ),
+                            ),
+                          ),
 
-          Positioned.fill(
-            child: Column(
-              children: [
-                const Spacer(),
-                Center(
-                  child: Container(
-                    width: screenWidth * widget.width,
-                    padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xCC7A025A),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: const Color(0xFFFF6CD8),
-                        width: 3,
+                          const Spacer(),
+
+                          Center(
+                            child: Container(
+                              width: screenWidth * widget.width,
+                              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: const Color(0xCC7A025A),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: const Color(0xFFFF6CD8),
+                                  width: 3,
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    widget.title,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 28,
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black87,
+                                          offset: Offset(2, 2),
+                                          blurRadius: 4,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  if (widget.child != null)
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxHeight: screenHeight * 0.65,
+                                      ),
+                                      child: SingleChildScrollView(
+                                        child: widget.child,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          const Spacer(),
+
+                          if (widget.bottomChild != null)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 20),
+                              child: widget.bottomChild!,
+                            ),
+                        ],
                       ),
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          widget.title,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            shadows: [
-                              Shadow(
-                                color: Colors.black87,
-                                offset: Offset(2, 2),
-                                blurRadius: 4,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        if (widget.child != null)
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxHeight: screenHeight * 0.5,
-                            ),
-                            child: SingleChildScrollView(
-                              child: widget.child,
-                            ),
-                          ),
-                      ],
-                    ),
                   ),
-                ),
-                const Spacer(),
-                if (widget.bottomChild != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 40),
-                    child: widget.bottomChild!,
-                  ),
-              ],
+                );
+              },
             ),
           ),
         ],
       ),
     );
   }
+
 }

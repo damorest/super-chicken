@@ -28,7 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _saveSettings() async {
     final settings = context.read<SettingsService>();
-    await settings.save(
+    await settings.saveSettings(
       sound: soundOn,
       notification: notificationOn,
       vibration: vibrationOn,
