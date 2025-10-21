@@ -28,7 +28,7 @@ class _GamePageState extends State<GamePage> {
     super.initState();
 
     final settings = context.read<SettingsService>();
-    final avatar = settings.avatarPath.isNotEmpty ? settings.avatarPath : 'default_chicken.png';
+    final avatar = settings.avatarPath;
     bestScore = settings.bestScore;
 
     game = ChickenGame(
@@ -53,6 +53,7 @@ class _GamePageState extends State<GamePage> {
       },
       avatarPath: avatar,
       settings: settings,
+      selectedEgg: settings.selectedEgg,
     );
   }
 

@@ -12,7 +12,7 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        Provider<SettingsService>.value(value: settingsService),
+        ChangeNotifierProvider<SettingsService>.value(value: settingsService),
       ],
       child: const MyApp(),
     ),

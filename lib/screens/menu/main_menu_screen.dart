@@ -13,7 +13,7 @@ class MainMenuPage extends StatelessWidget {
       {'label': 'Profile', 'route': AppRouter.profile},
       {'label': 'Settings', 'route': AppRouter.settings},
       {'label': 'Leaderboard', 'route': AppRouter.leaderboard},
-      {'label': 'Shop', 'route': null},
+      {'label': 'Shop', 'route': AppRouter.shop},
       {'label': 'How\nto Play', 'route': AppRouter.howToPlay},
       {'label': 'Exit', 'route': null},
     ];

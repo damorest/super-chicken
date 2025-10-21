@@ -6,9 +6,10 @@ import 'enemy_circle.dart';
 
 class Egg extends SpriteComponent with CollisionCallbacks, HasGameReference<ChickenGame> {
   final Vector2 gameSize;
+  final String eggAsset;
   final double speed = 300;
 
-  Egg({required this.gameSize, required Vector2 position})
+  Egg({required this.gameSize, required Vector2 position, required this.eggAsset})
       : super(
     size: Vector2(30, 40),
     position: position,
@@ -18,7 +19,7 @@ class Egg extends SpriteComponent with CollisionCallbacks, HasGameReference<Chic
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    sprite = await Sprite.load('agg.png');
+    sprite = await Sprite.load(eggAsset);
 
     add(RectangleHitbox()..collisionType = CollisionType.active);
   }

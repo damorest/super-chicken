@@ -7,6 +7,7 @@ import '../screens/loading/loading_page.dart';
 import '../screens/menu/main_menu_screen.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/settings/settings_screen.dart';
+import '../screens/shop/shop_screen.dart';
 
 class AppRouter {
   static const loading = '/loading';
@@ -17,6 +18,7 @@ class AppRouter {
   static const howToPlay = '/howToPlay';
   static const profile = '/profile';
   static const leaderboard = '/leaderboard';
+  static const shop = '/shop';
 
   static final routes = <String, WidgetBuilder>{
     loading: (_) => const LoadingScreen(),
@@ -27,5 +29,6 @@ class AppRouter {
     howToPlay: (_) => const HowToPlay(),
     profile: (_) => const ProfilePage(),
     leaderboard: (_) => const LeaderboardPage(),
+    shop: (_) => const ShopPage(),
   };
 }

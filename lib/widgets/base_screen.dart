@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:media_test/widgets/wallet_display.dart';
+import 'package:provider/provider.dart';
+import '../services/settings_service.dart';
 import 'app_back_button.dart';
 
 class BaseScreen extends StatefulWidget {
@@ -7,6 +10,7 @@ class BaseScreen extends StatefulWidget {
   final Widget? bottomChild;
   final VoidCallback? onBack;
   final double width;
+  final bool showWallet;
 
   const BaseScreen({
     super.key,
@@ -15,6 +19,7 @@ class BaseScreen extends StatefulWidget {
     this.bottomChild,
     this.onBack,
     this.width = 0.95,
+    this.showWallet = true,
   });
 
   @override
@@ -85,13 +90,18 @@ class _BaseScreenState extends State<BaseScreen> with SingleTickerProviderStateM
                       child: Column(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(left: 16, top: 8),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: AppBackButton(
-                                size: 70,
-                                onTap: widget.onBack ?? () => Navigator.pop(context),
-                              ),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                AppBackButton(
+                                  size: 70,
+                                  onTap: widget.onBack ?? () => Navigator.pop(context),
+                                ),
+                                WalletDisplay(
+                                    balance: context.watch<SettingsService>().balance,
+                                  ),
+                              ],
                             ),
                           ),
 
