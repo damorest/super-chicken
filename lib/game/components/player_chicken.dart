@@ -9,10 +9,11 @@ class PlayerChicken extends SpriteComponent
     with DragCallbacks, CollisionCallbacks, TapCallbacks, HasGameReference<ChickenGame>  {
   final Vector2 gameSize;
   final String avatarPath;
+  final String selectedEgg;
   bool isAlive = true;
   late final Sprite initialSprite;
 
-  PlayerChicken({required this.gameSize, required this.avatarPath})
+  PlayerChicken({required this.gameSize, required this.avatarPath, required this.selectedEgg})
       : super(size: Vector2(100, 100), anchor: Anchor.center);
 
   @override
@@ -61,6 +62,7 @@ class PlayerChicken extends SpriteComponent
     final egg = Egg(
       gameSize: gameSize,
       position: Vector2(position.x, position.y + size.y / 2),
+      eggAsset: selectedEgg
     );
     parent?.add(egg);
   }

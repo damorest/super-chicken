@@ -9,6 +9,7 @@ class ChickenGame extends FlameGame with HasCollisionDetection {
   final VoidCallback onGameOver;
   late PlayerChicken player;
   final String avatarPath;
+  final String selectedEgg;
   final SettingsService settings;
   double _spawnTimer = 0;
   bool isGameOver = false;
@@ -18,7 +19,7 @@ class ChickenGame extends FlameGame with HasCollisionDetection {
   double remainingTime = 90;
   bool isWon = false;
 
-  ChickenGame({required this.onGameOver,required this.settings, required this.onScoreUpdate, required this.avatarPath,});
+  ChickenGame({required this.onGameOver,required this.settings, required this.onScoreUpdate, required this.avatarPath, required this.selectedEgg});
 
   @override
   Future<void> onLoad() async {
@@ -34,6 +35,7 @@ class ChickenGame extends FlameGame with HasCollisionDetection {
     player = PlayerChicken(
       gameSize: size,
       avatarPath: avatarPath,
+      selectedEgg: selectedEgg,
     )..priority = 1;
 
     add(player);

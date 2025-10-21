@@ -1,11 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SettingsService {
+class SettingsService extends ChangeNotifier {
   static const _soundKey = 'soundOn';
   static const _notificationKey = 'notificationOn';
   static const _vibrationKey = 'vibrationOn';
   static const _bestScoreKey = 'bestScore';
   static const _lastScoreKey = 'lastScore';
+  static const _balanceKey = 'balance';
+  static const _selectedEggKey = 'selectedEgg';
 
   final SharedPreferences _prefs;
 
@@ -42,12 +45,26 @@ class SettingsService {
     await setLastScore(score);
   }
 
-  String get avatarPath => _prefs.getString('avatarPath') ?? '';
+  int get balance => _prefs.getInt(_balanceKey) ?? 1000;
+  String get selectedEgg => _prefs.getString(_selectedEggKey) ?? 'default_egg.png';
+
+  Future<void> updateBalance(int newBalance) async {
+    await _prefs.setInt(_balanceKey, newBalance);
+    notifyListeners();
+  }
+
+  Future<void> updateSelectedEgg(String eggAsset) async {
+    final newEggAsset = _normalizePath(eggAsset);
+    await _prefs.setString(_selectedEggKey, newEggAsset);
+    notifyListeners();
+  }
+
+  String get avatarPath => _prefs.getString('avatarPath') ?? 'default_chicken.png';
 
   Future<void> setUsername(String value) async => await _prefs.setString('username', value);
   Future<void> setEmail(String value) async => await _prefs.setString('email', value);
 
-  String _normalizeAvatarPath(String inputPath) {
+  String _normalizePath(String inputPath) {
     var path = inputPath.trim();
 
     const prefix = 'assets/images/';
@@ -59,7 +76,7 @@ class SettingsService {
   }
 
   Future<void> setAvatarPath(String path) async {
-    final normalized = _normalizeAvatarPath(path);
+    final normalized = _normalizePath(path);
     await _prefs.setString('avatarPath', normalized);
   }
 
