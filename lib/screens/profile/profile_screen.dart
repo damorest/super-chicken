@@ -208,6 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
+      showWallet: false,
       width: 0.8,
       title: 'PROFILE',
       bottomChild: AppButton(

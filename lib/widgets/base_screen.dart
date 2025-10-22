@@ -55,6 +55,8 @@ class _BaseScreenState extends State<BaseScreen> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final settings = context.watch<SettingsService>();
+    final balance = settings.balance;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -98,9 +100,11 @@ class _BaseScreenState extends State<BaseScreen> with SingleTickerProviderStateM
                                   size: 70,
                                   onTap: widget.onBack ?? () => Navigator.pop(context),
                                 ),
-                                WalletDisplay(
-                                    balance: context.watch<SettingsService>().balance,
-                                  ),
+                                widget.showWallet
+                                ? WalletDisplay(
+                                    balance: balance,
+                                  )
+                                : const SizedBox(),
                               ],
                             ),
                           ),

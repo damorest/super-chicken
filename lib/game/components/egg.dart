@@ -21,7 +21,10 @@ class Egg extends SpriteComponent with CollisionCallbacks, HasGameReference<Chic
     await super.onLoad();
     sprite = await Sprite.load(eggAsset);
 
-    add(RectangleHitbox()..collisionType = CollisionType.active);
+    add(CircleHitbox(
+      radius: size.x * 0.35,
+      position: size / 2,
+    )..collisionType = CollisionType.active);
   }
 
   @override

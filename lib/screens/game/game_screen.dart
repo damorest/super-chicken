@@ -91,37 +91,22 @@ class _GamePageState extends State<GamePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppButton(
-                  type: AppButtonType.secondary,
-                  width: 70,
-                  height: 70,
-                  icon: const Icon(
-                    Icons.home,
-                    color: Colors.white,
-                    size: 36,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black87,
-                        offset: Offset(2, 2),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                  onPressed: () => Navigator.pushNamed(context, AppRouter.home) ,
-                ),
-                Text(
-                  remainingTime.toStringAsFixed(0),
-                  style: const TextStyle(
-                    fontSize: 28,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black87,
-                        offset: Offset(2, 2),
-                        blurRadius: 4,
-                      ),
-                    ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    remainingTime.toStringAsFixed(0),
+                    style: const TextStyle(
+                      fontSize: 28,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black87,
+                          offset: Offset(2, 2),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -181,7 +166,7 @@ class _GamePageState extends State<GamePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           GestureDetector(
-                            onTap: () => Navigator.pop(context),
+                            onTap: () => Navigator.pushNamed(context, AppRouter.home),
                             child: const Text(
                               'HOME',
                               style: TextStyle(
@@ -300,7 +285,7 @@ class _GamePageState extends State<GamePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             GestureDetector(
-                              onTap: () => Navigator.pop(context),
+                              onTap: () => Navigator.pushNamed(context, AppRouter.home),
                               child: const Text(
                                 'HOME',
                                 style: TextStyle(
@@ -325,41 +310,17 @@ class _GamePageState extends State<GamePage> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        GestureDetector(
-                          onTap: () {
-                            ///TODO go to next level
+                        AppButton(
+                          text: 'Next',
+                          fontSize: 32,
+                          onPressed: () {
+                            final settings = context.read<SettingsService>();
+                            final nextLevel = settings.currentLevel + 1;
+                            settings.currentLevel = nextLevel;
+
+                            Navigator.pushNamed(context, AppRouter.game);
                           },
-                          child: SizedBox(
-                            width: 200,
-                            height: 80,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/images/menu_but.png',
-                                  width: 200,
-                                  height: 80,
-                                  fit: BoxFit.contain,
-                                ),
-                                const Text(
-                                  'NEXT',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.bold,
-                                    shadows: [
-                                      Shadow(
-                                        color: Colors.black87,
-                                        offset: Offset(2, 2),
-                                        blurRadius: 4,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
+                        ),
                       ] else ...[
                         const Text(
                           'YOU LOSE!',
@@ -406,7 +367,7 @@ class _GamePageState extends State<GamePage> {
                         const SizedBox(height: 20),
                         Center(
                           child: GestureDetector(
-                            onTap: () => Navigator.pop(context),
+                            onTap: () => Navigator.pushNamed(context, AppRouter.home),
                             child: const Text(
                               'HOME',
                               style: TextStyle(

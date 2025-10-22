@@ -8,6 +8,7 @@ import 'components/enemy_circle.dart';
 class ChickenGame extends FlameGame with HasCollisionDetection {
   final VoidCallback onGameOver;
   late PlayerChicken player;
+  late int level;
   final String avatarPath;
   final String selectedEgg;
   final SettingsService settings;
@@ -24,13 +25,12 @@ class ChickenGame extends FlameGame with HasCollisionDetection {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    level = settings.currentLevel;
 
     add(SpriteComponent()
       ..sprite = await loadSprite('game_bg.png')
       ..size = size
       ..anchor = Anchor.topLeft);
-
-
 
     player = PlayerChicken(
       gameSize: size,
@@ -55,12 +55,22 @@ class ChickenGame extends FlameGame with HasCollisionDetection {
       return;
     }
 
-    if (_spawnTimer > 1.5) {
+    const baseSpawnRate = 1.5;
+    final spawnRate = baseSpawnRate / (1 + 0.1 * (level - 1));
+
+    if (_spawnTimer > spawnRate) {
       _spawnTimer = 0;
-      add(EnemyCircle(gameSize: size)..priority = 0);
+      add(
+        EnemyCircle(
+          gameSize: size,
+          level: level,
+        )..priority = 0,
+      );
     }
+
     onScoreUpdate?.call(score, remainingTime, player.isAlive);
   }
+
 
   void addScore(int points) {
     score += points;
@@ -72,6 +82,9 @@ class ChickenGame extends FlameGame with HasCollisionDetection {
     isGameOver = true;
     isWon = won;
     settings.updateBestScore(score);
+    if (won) {
+      settings.unlockNextLevel();
+    }
     pauseEngine();
     onGameOver();
   }

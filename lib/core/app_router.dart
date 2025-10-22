@@ -3,6 +3,7 @@ import 'package:media_test/screens/home/home_screen.dart';
 import '../screens/game/game_screen.dart';
 import '../screens/how_to_play/how_to_play.dart';
 import '../screens/leaderboard/leaderboard_screen.dart';
+import '../screens/levels/levels_screen.dart';
 import '../screens/loading/loading_page.dart';
 import '../screens/menu/main_menu_screen.dart';
 import '../screens/profile/profile_screen.dart';
@@ -19,6 +20,7 @@ class AppRouter {
   static const profile = '/profile';
   static const leaderboard = '/leaderboard';
   static const shop = '/shop';
+  static const levels = '/levels';
 
   static final routes = <String, WidgetBuilder>{
     loading: (_) => const LoadingScreen(),
@@ -30,5 +32,6 @@ class AppRouter {
     profile: (_) => const ProfilePage(),
     leaderboard: (_) => const LeaderboardPage(),
     shop: (_) => const ShopPage(),
+    levels: (_) => const LevelsPage(),
   };
 }

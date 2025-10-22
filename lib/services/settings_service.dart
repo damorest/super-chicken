@@ -9,6 +9,9 @@ class SettingsService extends ChangeNotifier {
   static const _lastScoreKey = 'lastScore';
   static const _balanceKey = 'balance';
   static const _selectedEggKey = 'selectedEgg';
+  static const _currentLevelKey = 'currentLevel';
+  static const _maxUnlockedLevelKey = 'maxUnlockedLevel';
+
 
   final SharedPreferences _prefs;
 
@@ -57,6 +60,30 @@ class SettingsService extends ChangeNotifier {
     final newEggAsset = _normalizePath(eggAsset);
     await _prefs.setString(_selectedEggKey, newEggAsset);
     notifyListeners();
+  }
+
+  int get currentLevel => _prefs.getInt(_currentLevelKey) ?? 1;
+  int get maxUnlockedLevel => _prefs.getInt(_maxUnlockedLevelKey) ?? 1;
+
+  set currentLevel(int value) {
+    _prefs.setInt(_currentLevelKey, value);
+    notifyListeners();
+  }
+
+  set maxUnlockedLevel(int value) {
+    _prefs.setInt(_maxUnlockedLevelKey, value);
+    notifyListeners();
+  }
+
+  void unlockNextLevel() {
+    final nextLevel = currentLevel + 1;
+    if (nextLevel > maxUnlockedLevel) {
+      maxUnlockedLevel = nextLevel;
+    }
+  }
+
+  void setLevel(int level) {
+    currentLevel = level;
   }
 
   String get avatarPath => _prefs.getString('avatarPath') ?? 'default_chicken.png';
