@@ -10,6 +10,7 @@ class AppButton extends StatelessWidget {
   final double height;
   final Widget? icon;
   final bool isDisabled;
+  final bool isUnlocked;
   final double fontSize;
 
   const AppButton({
@@ -21,6 +22,7 @@ class AppButton extends StatelessWidget {
     this.height = 100,
     this.icon,
     this.isDisabled = false,
+    this.isUnlocked = true,
     this.fontSize = 20.0,
   });
 
@@ -77,7 +79,9 @@ class AppButton extends StatelessWidget {
         );
       case AppButtonType.secondary:
         return Image.asset(
-          'assets/images/Rectangle.png',
+          isUnlocked
+              ? 'assets/images/Rectangle.png'
+              : 'assets/images/locked.png',
           width: width,
           height: height,
           fit: BoxFit.contain,

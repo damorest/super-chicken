@@ -28,6 +28,7 @@ class LeaderboardPage extends StatelessWidget {
     players.sort((a, b) => b['score'].compareTo(a['score']));
 
     return BaseScreen(
+      showWallet: false,
       title: 'Leaderboard',
       width: 0.9,
       child: Column(

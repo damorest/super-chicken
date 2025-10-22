@@ -42,6 +42,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
+      showWallet: false,
       title: 'SETTINGS',
       bottomChild: AppButton(
         text: 'SAVE',

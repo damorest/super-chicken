@@ -11,24 +11,42 @@ class PlayerChicken extends SpriteComponent
   final String avatarPath;
   final String selectedEgg;
   bool isAlive = true;
-  late final Sprite initialSprite;
+
+  Sprite? initialSprite;
+  Vector2? initialSize;
 
   PlayerChicken({required this.gameSize, required this.avatarPath, required this.selectedEgg})
-      : super(size: Vector2(100, 100), anchor: Anchor.center);
+      : super(size: Vector2(60, 100), anchor: Anchor.center);
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+
+    Sprite loadedSprite;
     try {
-    initialSprite = await Sprite.load(avatarPath);
+      loadedSprite = await Sprite.load(avatarPath);
     } catch (_) {
-      initialSprite = await Sprite.load('default_chicken.png');
+      loadedSprite = await Sprite.load('default_chicken.png');
     }
-    sprite = initialSprite;
+
+    sprite = loadedSprite;
+
+    final originalSize = loadedSprite.srcSize; // Vector2
+    const targetHeight = 100.0;
+    final targetWidth = targetHeight * (originalSize.x / originalSize.y);
+
+    size = Vector2(targetWidth, targetHeight);
     position = Vector2(gameSize.x / 2, 170);
 
-    add(RectangleHitbox());
+    initialSprite = loadedSprite;
+    initialSize = size.clone();
+
+    add(CircleHitbox(
+      radius: size.x * 0.4,
+      position: size / 2,
+    )..collisionType = CollisionType.active);
   }
+
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
@@ -77,9 +95,11 @@ class PlayerChicken extends SpriteComponent
     game.gameOver();
   }
 
-
   void resetSprite() {
-    sprite = initialSprite;
-    isAlive = true;
+    if (initialSprite != null && initialSize != null) {
+      sprite = initialSprite;
+      size = initialSize!.clone();
+      isAlive = true;
+    }
   }
 }

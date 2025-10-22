@@ -35,13 +35,13 @@ class HomePage extends StatelessWidget {
             bottom: size.height * 0.04,
             child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, AppRouter.game);
+                Navigator.pushNamed(context, AppRouter.levels);
               },
               child: const AppButton(
                 text: 'PLAY',
                 width: 270,
                 height: 170,
-                fontSize: 65,
+                fontSize: 60,
               ),
             ),
           ),
