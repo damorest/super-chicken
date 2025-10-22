@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:media_test/core/app_router.dart';
+import '../../widgets/base_screen.dart';
 import '../../widgets/components/app_button.dart';
 
 class MainMenuPage extends StatelessWidget {
@@ -7,96 +8,34 @@ class MainMenuPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buttons = [
-      'Play',
-      'Profile',
-      'Settings',
-      'Leaderboard',
-      'Shop',
-      'How to Play',
-      'Exit',
+    final menuItems = [
+      {'label': 'Play', 'route': AppRouter.game},
+      {'label': 'Profile', 'route': AppRouter.profile},
+      {'label': 'Settings', 'route': AppRouter.settings},
+      {'label': 'Leaderboard', 'route': AppRouter.leaderboard},
+      {'label': 'Shop', 'route': AppRouter.shop},
+      {'label': 'How\nto Play', 'route': AppRouter.howToPlay},
+      {'label': 'Exit', 'route': null},
     ];
 
-    return Scaffold(
-      body: Stack(
+    return BaseScreen(
+      title: 'MENU',
+      width: 0.9,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/menu_bg.png',
-              fit: BoxFit.cover,
+          for (final item in menuItems) ...[
+            AppButton(
+              fontSize: 20,
+              width: 180,
+              height: 90,
+              text: item['label'] as String,
+              onPressed: item['route'] != null
+                  ? () => Navigator.pushNamed(context, item['route'] as String)
+                  : () => Navigator.pop(context),
             ),
-          ),
-          Column(
-            children: [
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                  Image.asset(
-                    'assets/images/Rectangle.png',
-                    width: 50,
-                    height: 50,
-                  ),
-                  Image.asset(
-                    'assets/images/Circle.png',
-                    width: 50,
-                    height: 50,
-                  ),
-                ]),
-              ),
-              const SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  color: Colors.pinkAccent,
-                  child: Column(
-                    children: [
-                      const Text(
-                        'MENU',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black54,
-                              offset: Offset(2, 2),
-                              blurRadius: 4,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Center(
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.all(24),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const SizedBox(height: 32),
-                              for (final label in buttons) ...[
-                                AppButton(
-                                  text: label,
-                                  backgroundImage: 'assets/images/menu_but.png',
-                                  onPressed: () {
-                                    debugPrint('Pressed $label');
-                                    Navigator.pushNamed(context, AppRouter.home);
-                                  },
-                                ),
-                                const SizedBox(height: 12),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            const SizedBox(height: 12),
+          ],
         ],
       ),
     );

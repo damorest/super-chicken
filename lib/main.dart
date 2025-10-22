@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:media_test/providers/app_provider.dart';
+import 'package:media_test/services/settings_service.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'core/app_router.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final settingsService = SettingsService(prefs);
+
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => AppProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<SettingsService>.value(value: settingsService),
+      ],
       child: const MyApp(),
     ),
   );
@@ -23,7 +30,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
           useMaterial3: true,
-          fontFamily: 'Poppins'),
+          fontFamily: 'RubikMonoOne'),
       initialRoute: AppRouter.loading,
       routes: AppRouter.routes,
     );

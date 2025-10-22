@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:media_test/widgets/components/app_button.dart';
 import '../../core/app_router.dart';
 
 class HomePage extends StatelessWidget {
@@ -31,36 +32,16 @@ class HomePage extends StatelessWidget {
           ),
 
           Positioned(
-            bottom: size.height * 0.02,
+            bottom: size.height * 0.04,
             child: GestureDetector(
               onTap: () {
-                /// TODO go to game Page
+                Navigator.pushNamed(context, AppRouter.levels);
               },
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image.asset(
-                    'assets/images/menu_but.png',
-                    width: 270,
-                    height: 270,
-                    fit: BoxFit.contain,
-                  ),
-                  const Text(
-                    'PLAY',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 80,
-                      fontWeight: FontWeight.bold,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black87,
-                          offset: Offset(2, 2),
-                          blurRadius: 4,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              child: const AppButton(
+                text: 'PLAY',
+                width: 270,
+                height: 170,
+                fontSize: 60,
               ),
             ),
           ),
@@ -69,34 +50,12 @@ class HomePage extends StatelessWidget {
             top: 40,
             left: 20,
             child: GestureDetector(
-              onTap: () {
-                // TODO: show info screen
-              },
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image.asset(
-                    'assets/images/Rectangle.png',
-                    width: 70,
-                    height: 70,
-                    fit: BoxFit.contain,
-                  ),
-                  const Text(
-                    'i',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black87,
-                          offset: Offset(2, 2),
-                          blurRadius: 4,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              onTap: () => Navigator.pushNamed(context, AppRouter.howToPlay) ,
+              child: const AppButton(
+                type: AppButtonType.secondary,
+                text: 'i',
+                width: 70,
+                height: 70,
               ),
             ),
           ),
@@ -108,28 +67,22 @@ class HomePage extends StatelessWidget {
               onTap: () {
                 Navigator.pushNamed(context, AppRouter.menu);
               },
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image.asset(
-                    'assets/images/Rectangle.png',
-                    width: 70,
-                    height: 70,
-                    fit: BoxFit.contain,
-                  ),
-                  const Icon(
-                    Icons.menu,
-                    color: Colors.white,
-                    size: 36,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black87,
-                        offset: Offset(2, 2),
-                        blurRadius: 4,
-                      ),
-                    ],
+              child: const AppButton(
+                type: AppButtonType.secondary,
+                width: 70,
+                height: 70,
+                icon: Icon(
+                Icons.menu,
+                color: Colors.white,
+                size: 36,
+                shadows: [
+                  Shadow(
+                    color: Colors.black87,
+                    offset: Offset(2, 2),
+                    blurRadius: 4,
                   ),
                 ],
+              ),
               ),
             ),
           ),
